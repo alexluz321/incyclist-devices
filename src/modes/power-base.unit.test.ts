@@ -105,11 +105,42 @@ describe('PowerMeterMode', () => {
             expect(res.distance).toBe(0)
 
             mode.data.speed = 30;            
-            res = mode.calculateSpeedAndDistance(307, 0,70, 29.99)                        
+            res = mode.calculateSpeedAndDistance(307, 0,70, 29.99)
             expect(res.distance).toBeGreaterThan(0)
 
         })
 
+
+    })
+
+    describe ( 'updateSpeedAndDistance', () => {
+
+        beforeEach( ()=> {
+            mode = new PowerMeterMode( new MockAdapter(),MockConfig);
+            mode.getTimeSinceLastUpdate = ()=>1
+        })
+
+        test('coasting below min speed with 0W continues to add distance', ()=>{
+            mode.data.speed = 8;
+            const prevData = { speed:8, distanceInternal:100 }
+            const data:any = {}
+
+            mode.updateSpeedAndDistance(0, 0, 'race', data, prevData)
+
+            expect(data.speed).toBe(7)
+            expect(data.distanceInternal).toBeCloseTo(100+7/3.6,5)
+        })
+
+        test('coasting below min speed with 0W from start of ride', ()=>{
+            mode.data.speed = 8;
+            const prevData = { speed:8 }
+            const data:any = {}
+
+            mode.updateSpeedAndDistance(0, 0, 'race', data, prevData)
+
+            expect(data.speed).toBe(7)
+            expect(data.distanceInternal).toBeCloseTo(7/3.6,5)
+        })
 
     })
     describe ( 'calculatePowerAndDistance', () => { 

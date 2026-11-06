@@ -197,7 +197,7 @@ export default  class PowerBasedCyclingModeBase extends CyclingModeBase  {
 
         if (power === 0 && speed < MIN_SPEED) {
             data.speed = prevData.speed < 1 ? 0 : prevData.speed - 1;
-            data.distanceInternal = distanceInternal||0 + data.speed / 3.6 * t;
+            data.distanceInternal = distanceInternal + data.speed / 3.6 * t;
         }
         else {
             data.speed = speed;
